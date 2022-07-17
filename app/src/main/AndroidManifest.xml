@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.txc.healthand">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,14 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealtHand"
         tools:targetApi="31">
-        <service
-            android:name=".ArticleService"
-            android:enabled="true"
-            android:exported="true"></service>
 
         <activity
             android:name=".activity.MainActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
