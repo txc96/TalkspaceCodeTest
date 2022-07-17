@@ -1,10 +1,18 @@
 package com.txc.healthand.networking.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 
+import java.util.List;
+
 public class Byline {
-    String original, organization;
-    JSONArray person;
+    @SerializedName("original")
+    private String original;
+    @SerializedName("organization")
+    private String organization;
+    @SerializedName("person")
+    private List<Person> person;
 
     public String getOriginal() {
         return original;
@@ -22,11 +30,11 @@ public class Byline {
         this.organization = organization;
     }
 
-    public JSONArray getPerson() {
+    public List<Person> getPerson() {
         return person;
     }
 
-    public void setPerson(JSONArray person) {
+    public void setPerson(List<Person> person) {
         this.person = person;
     }
 }

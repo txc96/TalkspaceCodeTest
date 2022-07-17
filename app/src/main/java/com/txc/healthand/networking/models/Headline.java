@@ -1,7 +1,22 @@
 package com.txc.healthand.networking.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Headline {
-    String main, kicker, content_kicker, print_headline, name, seo, sub;
+    @SerializedName("main")
+    private String main;
+    @SerializedName("kicker")
+    private String kicker;
+    @SerializedName("content_kicker")
+    private String content_kicker;
+    @SerializedName("print_headline")
+    private String print_headline;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("seo")
+    private String seo;
+    @SerializedName("sub")
+    private String sub;
 
     public String getMain() {
         return main;

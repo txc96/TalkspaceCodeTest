@@ -1,13 +1,45 @@
 package com.txc.healthand.networking.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.util.List;
 
 public class Article {
-    private String web_url, snippet, print_section, source, pub_date, document_type, news_desk, section_name, type_of_material, _id, uri;
-    private int print_page, word_count;
-    JSONArray mutlimedia, keywords;
+    @SerializedName("web_url")
+    private String web_url;
+    @SerializedName("snippet")
+    private String snippet;
+    @SerializedName("print_section")
+    private String print_section;
+    @SerializedName("source")
+    private String source;
+    @SerializedName("pub_date")
+    private String pub_date;
+    @SerializedName("document_type")
+    private String document_type;
+    @SerializedName("news_desk")
+    private String news_desk;
+    @SerializedName("section_name")
+    private String section_name;
+    @SerializedName("type_of_material")
+    private String type_of_material;
+    @SerializedName("_id")
+    private String _id;
+    @SerializedName("uri")
+    private String uri;
+    @SerializedName("print_page")
+    private int print_page;
+    @SerializedName("word_count")
+    private int word_count;
+    @SerializedName("mutlimedia")
+    List<Mulitmedia> mutlimedia;
+    @SerializedName("keywords")
+    List<Keyword> keywords;
+    @SerializedName("headline")
     Headline headline;
+    @SerializedName("byline")
     Byline byline;
 
     public String getWeb_url() {
@@ -114,19 +146,19 @@ public class Article {
         this.word_count = word_count;
     }
 
-    public JSONArray getMutlimedia() {
+    public List<Mulitmedia> getMutlimedia() {
         return mutlimedia;
     }
 
-    public void setMutlimedia(JSONArray mutlimedia) {
+    public void setMutlimedia(List<Mulitmedia> mutlimedia) {
         this.mutlimedia = mutlimedia;
     }
 
-    public JSONArray getKeywords() {
+    public List<Keyword> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(JSONArray keywords) {
+    public void setKeywords(List<Keyword> keywords) {
         this.keywords = keywords;
     }
 
