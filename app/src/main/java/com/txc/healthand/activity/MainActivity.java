@@ -19,7 +19,6 @@ import com.txc.healthand.activity.ui.ArticlesAdapter;
 import com.txc.healthand.activity.ui.SpinnerAdapter;
 import com.txc.healthand.networking.ArticlesService;
 import com.txc.healthand.networking.models.Article;
-import com.txc.healthand.networking.models.Mulitmedia;
 import com.txc.healthand.networking.models.NYTimesResponse;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
 
     @Override
     public void onArticleClicked(String url) {
-
+        
     }
 
     @Override
@@ -105,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
             @Override
             public void onResponse(Call<NYTimesResponse> call, Response<NYTimesResponse> response) {
                 if(response.isSuccessful()){
+                    Log.e("RES", response.raw().request().url().toString());
                     List<com.txc.healthand.networking.models.Article> articles = response.body().getDocs().getArticles();
                     if(response.body().getDocs() != null && articles != null){
                         ArrayList<ArticleObject> articleObjects = new ArrayList<>();
@@ -149,9 +149,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     }
 
     private String getArticleImage(Article article){
-        //TODO sort by rank, handle alt text and credit
-        if(article.getMutlimedia() != null){
-            return article.getMutlimedia().get(0).getUrl();
+        if(article.getMultimedia() != null){
+            return "https://www.nytimes.com/" + article.getMultimedia().get(0).getUrl();
         }
         else{
             return "";
@@ -159,11 +158,13 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     }
 
     //get the 3 separate name strings and combine them into one
-    //TODO middle initial boolean
     private String getAuthorName(Article article){
         String author = "";
+        String middleName = article.getByline().getPerson().get(0).getMiddlename();
         author = author + article.getByline().getPerson().get(0).getFirstname() + " ";
-        author = author + article.getByline().getPerson().get(0).getMiddlename()+ " ";
+        if(middleName != null && !middleName.equals("null") && !middleName.isEmpty()){
+            author = author + middleName + " ";
+        }
         author = author + article.getByline().getPerson().get(0).getLastname();
         return author;
     }

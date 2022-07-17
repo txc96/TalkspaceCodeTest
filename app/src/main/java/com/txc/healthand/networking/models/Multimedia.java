@@ -2,7 +2,7 @@ package com.txc.healthand.networking.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Mulitmedia {
+public class Multimedia {
     @SerializedName("rank")
     private int rank;
     @SerializedName("subtype")

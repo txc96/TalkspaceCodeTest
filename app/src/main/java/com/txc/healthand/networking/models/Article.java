@@ -2,8 +2,6 @@ package com.txc.healthand.networking.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-
 import java.util.List;
 
 public class Article {
@@ -33,8 +31,8 @@ public class Article {
     private int print_page;
     @SerializedName("word_count")
     private int word_count;
-    @SerializedName("mutlimedia")
-    List<Mulitmedia> mutlimedia;
+    @SerializedName("multimedia")
+    List<Multimedia> multimedia;
     @SerializedName("keywords")
     List<Keyword> keywords;
     @SerializedName("headline")
@@ -146,12 +144,12 @@ public class Article {
         this.word_count = word_count;
     }
 
-    public List<Mulitmedia> getMutlimedia() {
-        return mutlimedia;
+    public List<Multimedia> getMultimedia() {
+        return multimedia;
     }
 
-    public void setMutlimedia(List<Mulitmedia> mutlimedia) {
-        this.mutlimedia = mutlimedia;
+    public void setMultimedia(List<Multimedia> multimedia) {
+        this.multimedia = multimedia;
     }
 
     public List<Keyword> getKeywords() {
