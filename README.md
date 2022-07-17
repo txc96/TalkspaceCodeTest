@@ -2,20 +2,15 @@
 Android app for TalkSpace Mobile Assignment
 
 TODO:
-- Setup MainActivity
-- Setup Retrofit/Network class for API return
-  - Take in filters, parse return into list
-  - Make articleObject model
-- Setup adapter
-  - Image, headline, abstract
-  - 
+- Bug: Vertical view cutoff
 - Setup filters
-- Setup click events and intents
-  - Click to open in browser
-  - Long click to share
+  - Get spinner working correctly
 - Orientation check
-- Light and dark styling, setting menu
+- Options button -> Light/Dark Mode button
   - Set up styles
   - Set up menu
+- viewBinding for MVVM
 - Save articleObject functionality
+  - Swipe view?
+  - If time... ignore list?
 - Write up README/Documentation
