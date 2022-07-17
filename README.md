@@ -5,7 +5,7 @@ TODO:
 - Setup MainActivity
 - Setup Retrofit/Network class for API return
   - Take in filters, parse return into list
-  - Make article model
+  - Make articleObject model
 - Setup adapter
   - Image, headline, abstract
   - 
@@ -17,5 +17,5 @@ TODO:
 - Light and dark styling, setting menu
   - Set up styles
   - Set up menu
-- Save article functionality
+- Save articleObject functionality
 - Write up README/Documentation

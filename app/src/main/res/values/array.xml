@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filter_options">
+        <item>Health</item>
+        <item>Health &amp; Fitness</item>
+        <item>Men\'s Health</item>
+        <item>Women\'s Health</item>
+    </string-array>
+</resources>
