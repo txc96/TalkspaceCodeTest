@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -64,12 +66,18 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
 
     @Override
     public void onArticleClicked(String url) {
-        
+        Intent openInWebIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(openInWebIntent);
     }
 
     @Override
-    public void onArticleLongCLicked(String articleAbstract, String url) {
-
+    public void onArticleLongCLicked(String articleAbstract, String url, String title) {
+        String sharedContent = articleAbstract + "\n\n" + url;
+        Intent shareArticleIntent = new Intent(Intent.ACTION_SEND);
+        shareArticleIntent.putExtra(Intent.EXTRA_TEXT, sharedContent);
+        shareArticleIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(shareArticleIntent, title);
+        startActivity(shareIntent);
     }
 
     /**

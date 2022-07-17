@@ -47,7 +47,8 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             public boolean onLongClick(View view) {
                 callback.onArticleLongCLicked(articleObjects.get(
                         holder.getAdapterPosition()).getArticleAbstract(),
-                        articleObjects.get(holder.getAdapterPosition()).getWebUrl()
+                        articleObjects.get(holder.getAdapterPosition()).getWebUrl(),
+                        articleObjects.get(holder.getAdapterPosition()).getTitle()
                 );
                 return false;
             }
@@ -76,6 +77,6 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
 
     public interface Callback{
         void onArticleClicked(String url);
-        void onArticleLongCLicked(String articleAbstract, String url);
+        void onArticleLongCLicked(String articleAbstract, String url, String title);
     }
 }
