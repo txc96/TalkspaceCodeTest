@@ -54,6 +54,14 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
                 return false;
             }
         });
+        holder.download.setOnClickListener(v -> callback.onDownloadArticle(
+                articleObjects.get(holder.getAdapterPosition()).getTitle(),
+                articleObjects.get(holder.getAdapterPosition()).getAuthor(),
+                articleObjects.get(holder.getAdapterPosition()).getImageUrl(),
+                articleObjects.get(holder.getAdapterPosition()).getArticleAbstract(),
+                articleObjects.get(holder.getAdapterPosition()).getWebUrl(),
+                articleObjects.get(holder.getAdapterPosition()).getNews_desk()
+        ));
     }
 
     @Override
@@ -65,6 +73,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
         private ConstraintLayout article;
         private ImageView image;
         private TextView title, articleAbstract, author, tags;
+        private ImageView download;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -74,11 +83,13 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             articleAbstract = itemView.findViewById(R.id.article_abstract);
             author = itemView.findViewById(R.id.article_author);
             tags = itemView.findViewById(R.id.article_tags);
+            download = itemView.findViewById(R.id.download_button);
         }
     }
 
     public interface Callback{
         void onArticleClicked(String url);
         void onArticleLongCLicked(String articleAbstract, String url, String title);
+        void onDownloadArticle(String title, String author, String imageUrl, String articleAbstract, String webUrl, String news_desk);
     }
 }

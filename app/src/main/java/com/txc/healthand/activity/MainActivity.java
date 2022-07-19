@@ -1,19 +1,23 @@
 package com.txc.healthand.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.txc.healthand.BuildConfig;
 import com.txc.healthand.R;
 import com.txc.healthand.activity.models.ArticleObject;
@@ -27,7 +31,11 @@ import com.txc.healthand.networking.models.NYTimesResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,10 +44,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Callback, ArticlesAdapter.Callback{
 
     private RecyclerView articlesList;
-    private ArticlesAdapter articlesAdapter;
     private ArrayList<Filter> filterOptions;
     private ArticlesService mService;
     private int articlePage;
+    private boolean lightMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
         articlesList = findViewById(R.id.articles_list);
         Spinner filterSpinner = findViewById(R.id.category_spinner);
         Button optionsButton = findViewById(R.id.options_button);
+
+        optionsButton.setOnClickListener(v -> {
+            if(lightMode){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            lightMode = !lightMode;
+        });
 
         filterOptions = new ArrayList<>();
         for(String s : (getResources().getStringArray(R.array.filter_options))){
@@ -112,12 +130,71 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
         startActivity(shareIntent);
     }
 
+    @Override
+    public void onDownloadArticle(String title, String author, String imageUrl, String articleAbstract, String webUrl, String newsDesk) {
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+
+        ArticleObject articleObject = new ArticleObject(imageUrl, title, articleAbstract, author, webUrl, newsDesk);
+
+        String articlesArrayString = mPrefs.getString("storedArticlesList", "");
+        ArticleObject[] savedArticles;
+        String json;
+        if(articlesArrayString.isEmpty()){
+            savedArticles = new ArticleObject[]{articleObject};
+            json = gson.toJson(savedArticles);
+            mPrefs.edit().putString("storedArticlesList", json).apply();
+            handleToast(MainActivity.this, "Article Downloaded");
+        }
+        else{
+            ArticleObject[] retrievedArticleObjects = gson.fromJson(articlesArrayString, ArticleObject[].class);
+            if(retrievedArticleObjects != null && retrievedArticleObjects.length > 0){
+                savedArticles = new ArticleObject[retrievedArticleObjects.length + 1];
+                for(int i = 0; i < retrievedArticleObjects.length; i++){
+                    savedArticles[i] = retrievedArticleObjects[i];
+                }
+                savedArticles[savedArticles.length-1] = articleObject;
+                json = gson.toJson(savedArticles);
+                mPrefs.edit().putString("storedArticlesList", json).apply();
+                handleToast(MainActivity.this, "Article Downloaded");
+            }
+            else{
+                handleToast(MainActivity.this, "There was a problem retrieving your stored articles");
+            }
+        }
+    }
+
     /**
      * Adapter Method
      * */
     private void renderArticles(ArrayList<ArticleObject> articleObjects){
         articlesList.swapAdapter(new ArticlesAdapter(MainActivity.this, articleObjects, MainActivity.this), true);
         articlesList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+    }
+
+    /**
+     * Read Local Artciles Method
+     * */
+    //Retrieve articles from local store
+    private ArrayList<ArticleObject> getSavedArticles(){
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+
+        String articlesArrayString = mPrefs.getString("storedArticlesList", "");
+        if(articlesArrayString.isEmpty()){
+            handleToast(MainActivity.this, "There was a problem retrieving your stored articles");
+            return null;
+        }
+        else{
+            ArticleObject[] retrievedArticleObjects = gson.fromJson(articlesArrayString, ArticleObject[].class);
+            if(retrievedArticleObjects != null && retrievedArticleObjects.length > 0){
+                return new ArrayList<>(Arrays.asList(retrievedArticleObjects));
+            }
+            else{
+                handleToast(MainActivity.this, "There was a problem retrieving your stored articles");
+                return null;
+            }
+        }
     }
 
     /**
@@ -139,24 +216,34 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
                 if(response.isSuccessful()){
                     Log.e("RES", response.raw().request().url().toString());
                     List<com.txc.healthand.networking.models.Article> articles = response.body().getDocs().getArticles();
+                    ArrayList<ArticleObject> articleObjects = new ArrayList<>();
+                    ArrayList<ArticleObject> localArticleObjects = getSavedArticles();
+                    if(localArticleObjects != null){
+                        articleObjects.addAll(localArticleObjects);
+                    }
                     if(response.body().getDocs() != null && articles != null){
-                        ArrayList<ArticleObject> articleObjects = new ArrayList<>();
                         for(int i = 0; i < articles.size(); i++){
-                            ArticleObject articleObject = new ArticleObject(
-                                    getArticleImage(articles.get(i)),
-                                    articles.get(i).getHeadline().getMain(),
-                                    articles.get(i).getSnippet(),
-                                    getAuthorName(articles.get(i)),
-                                    articles.get(i).getWeb_url(),
-                                    articles.get(i).getNews_desk()
-                            );
-                            articleObjects.add(articleObject);
+                            int finalI = i;
+                            if(articleObjects.stream().noneMatch(a -> a.getTitle().equals(articles.get(finalI).getHeadline().getMain()))){
+                                ArticleObject articleObject = new ArticleObject(
+                                        getArticleImage(articles.get(i)),
+                                        articles.get(i).getHeadline().getMain(),
+                                        articles.get(i).getSnippet(),
+                                        getAuthorName(articles.get(i)),
+                                        articles.get(i).getWeb_url(),
+                                        articles.get(i).getNews_desk()
+                                );
+                                articleObjects.add(articleObject);
+                            }
                         }
-                        renderArticles(articleObjects);
                     }
                     else{
                         Log.e("RES", "Null response");
                         handleToast(MainActivity.this, "Response was null");
+                    }
+
+                    if(articleObjects.size() > 0){
+                        renderArticles(articleObjects);
                     }
                 }
             }

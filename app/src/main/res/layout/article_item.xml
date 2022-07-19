@@ -53,6 +53,17 @@
         app:layout_constraintTop_toTopOf="@id/article_author"
         app:layout_constraintBottom_toBottomOf="@id/article_author"
         android:layout_marginStart="@dimen/small_margin"
-        android:textStyle="italic"/>
+        android:textStyle="italic"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/download_button"
+        android:src="@drawable/download_image"
+        app:layout_constraintStart_toEndOf="@id/article_tags"
+        app:layout_constraintTop_toTopOf="@id/article_tags"
+        app:layout_constraintBottom_toBottomOf="@id/article_tags"
+        android:layout_marginStart="@dimen/small_margin"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
