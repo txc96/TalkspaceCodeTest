@@ -8,5 +8,6 @@ import retrofit2.http.Query;
 
 public interface ArticlesApiService {
     @GET("articlesearch.json")
+    //Page needs to come first for call to work correctly
     Call<NYTimesResponse> getArticles(@Query("page") int page, @Query("fq") String filters, @Query("api-key") String apiKey);
 }

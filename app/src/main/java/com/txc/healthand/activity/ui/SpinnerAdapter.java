@@ -24,6 +24,10 @@ public class SpinnerAdapter extends ArrayAdapter<Filter> {
     private SpinnerAdapter spinnerAdapter;
     private boolean boolFromView = false;
 
+    //Custom adapter to handle checkboxes in the dropdown of a spinner
+    //This adapter is tooled for this project from a stack overflow answer
+    //Original code: https://stackoverflow.com/questions/38417984/android-spinner-dropdown-checkbox
+    //Original author: Harshad Pansuriya
     public SpinnerAdapter(@NonNull Context context, Callback callback, int resource, @NonNull List<Filter> objects) {
         super(context, resource, objects);
         this.context = context;
@@ -46,6 +50,7 @@ public class SpinnerAdapter extends ArrayAdapter<Filter> {
     public View getCheckboxDropdown(final int position, View view, ViewGroup parent){
         final ViewHolder viewHolder;
 
+        //Create view if it doesn't exist, otherwise get it from the tag
         if(view == null){
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             view = layoutInflater.inflate(R.layout.spinner_item, null);
@@ -59,11 +64,13 @@ public class SpinnerAdapter extends ArrayAdapter<Filter> {
         }
 
         viewHolder.title.setText(filters.get(position).getTitle());
+        //Local boolean to help track status of checkbox
         boolFromView = true;
         viewHolder.checkbox.setChecked(filters.get(position).isSelected());
         boolFromView = false;
 
         if(position == 0){
+            //Hide checkbox on first item ("title/header" item)
             viewHolder.checkbox.setVisibility(View.INVISIBLE);
         }
 

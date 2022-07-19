@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HealtHand</string>
     <string name="light_mode">Light Mode</string>
+    <string name="dark_mode">Dark Mode</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 </resources>

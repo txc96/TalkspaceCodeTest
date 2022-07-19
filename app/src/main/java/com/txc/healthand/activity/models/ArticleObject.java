@@ -3,6 +3,9 @@ package com.txc.healthand.activity.models;
 public class ArticleObject {
     String imageUrl, title, articleAbstract, author, webUrl, news_desk;
 
+    //Custom article object that has only the info we need, easier to setup adapter for
+    //A bit memory inefficient since we have another article model (also slightly confusing)
+
     public ArticleObject(String imageUrl, String title, String articleAbstract, String author, String webUrl, String news_desk){
         this.imageUrl = imageUrl;
         this.title = title;

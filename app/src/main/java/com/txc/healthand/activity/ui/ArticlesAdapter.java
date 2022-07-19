@@ -88,6 +88,8 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     }
 
     public interface Callback{
+        //Callback interface to handle heavier logic in the activity/fragment and not on
+        //the adapter/ui thread
         void onArticleClicked(String url);
         void onArticleLongCLicked(String articleAbstract, String url, String title);
         void onDownloadArticle(String title, String author, String imageUrl, String articleAbstract, String webUrl, String news_desk);

@@ -2,5 +2,5 @@
 Android app for TalkSpace Mobile Assignment
 
 TODO:
-- viewBinding for MVVM
+- Filter articles better
 - Write up README/Documentation

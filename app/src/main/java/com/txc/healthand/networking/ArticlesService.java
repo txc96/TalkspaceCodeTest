@@ -10,6 +10,7 @@ public class ArticlesService {
     private static ArticlesService SINGLE_INSTANCE;
     private static ArticlesApiService articlesApiService;
 
+    //Create singleton of the service
     public static ArticlesService getInstance() {
         if (SINGLE_INSTANCE == null) {
             SINGLE_INSTANCE = new ArticlesService();
