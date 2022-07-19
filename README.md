@@ -3,7 +3,6 @@ Android app for TalkSpace Mobile Assignment
 
 ##TODO
 - Filter articles better
-- Vertical/Horizontal view for article
 
 ##Architecture
 
@@ -68,3 +67,6 @@ called for any data that might be in the response.
   didn't want to start with an project template that already had it, felt that would have been cheap. In the 
   real world that would bea no brainer, to already have it set up.
 - I do not know compose all that well, but if possible I would have like dto have used that over XML.
+- Using `swapAdapter` works well for the short term, but it creates a visual flash (esepcially when changing 
+  orientation) whenever resetting the layout so in production this would probably need to be swapped out 
+  with the native adapter methods
