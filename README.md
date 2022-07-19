@@ -4,7 +4,6 @@ Android app for TalkSpace Mobile Assignment
 ##TODO
 - Filter articles better
 - Vertical/Horizontal view for article
-- Write up README/Documentation
 
 ##Architecture
 
@@ -19,17 +18,22 @@ The application is split into a few packages:
 
 Activity handles most of the logic of the application, both data and UI wise. This is where the responses
 are sent and parsed, local objects are created and sent to the adapter, local saving and retrieving is 
-handled, and any other code relevant to the application. The models section contains a custom object
-for parsing the network response, that is lighter on fields than the corresponding model in the networking 
-package. It also has a model for the filter object, used to add or remove a category from the request. The
-UI folder contains adapters for both the spinner and recycler view. Mapping the data to the views correctly
-and calling the main activity with a callback when some logic needs to be handled. (typically with the request
-or an intent).
+handled, and any other code relevant to the application. 
+
+The models section contains a custom object `ArticleObject` for parsing the network response, that is 
+lighter on fields than the corresponding model in the networking package. It also has a model for the 
+filter object, used to add or remove a category from the request. 
+
+The UI folder contains adapters for both the spinner and recycler view. Mapping the data to the views 
+correctly and calling the main activity with a callback when some logic needs to be handled. (typically 
+with the request or an intent).
 
 Networking is reserved for retrofit code, mainly the API Service singleton, interface for the request method,
-and the models from the request. There is a model for each object received in the response from the response
-as a whole to a keyword on an article. That way, retrofit can easily map the response to objects, which can
-simply have the relevant .get() called for any data that might be in the response.
+and the models from the request.
+
+There is a model for each object received in the response from the response as a whole to a keyword on an 
+article. That way, retrofit can easily map the response to objects, which can simply have the relevant `.get()` 
+called for any data that might be in the response.
 
 ##Reasoning
 
@@ -46,9 +50,9 @@ simply have the relevant .get() called for any data that might be in the respons
   work onto this, plus with only one screen I didn't feel it was necessary
 - Why use callbacks to the activity in the adapters? It keeps the ui code free from as much non necessary
   logic as possible, cutting down on performance slowing and dropped frames
-- Other questions? Pleade feel free to ask me
+- Other questions? Please feel free to ask me
 
-##Missing features/trdeoffs
+##Missing features/trde-offs
 
 - The light/dark theme is a bit of a cop out, I wanted to hit the goal but with the shortened time
   frame setting up custom themes didn't feasible with the scope/time.
@@ -60,7 +64,7 @@ simply have the relevant .get() called for any data that might be in the respons
 - Filtering works pretty well, but can be a bit janky sometimes. A better solution might exist with independent
   buttons that doesn't rely on a custom adapter.
 - I would have like to implement an infinite scrolling form of loading over page buttons, but again scope/time
-- I would have like to have used the viewbinding library to utilize an MVVM approach, but scope/time. Also I 
+- I would have like to have used the `viewbinding` library to utilize an MVVM approach, but scope/time. Also I 
   didn't want to start with an project template that already had it, felt that would have been cheap. In the 
   real world that would bea no brainer, to already have it set up.
 - I do not know compose all that well, but if possible I would have like dto have used that over XML.
