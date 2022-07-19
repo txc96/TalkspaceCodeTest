@@ -1,14 +1,15 @@
 package com.txc.healthand.activity.models;
 
 public class ArticleObject {
-    String imageUrl, title, articleAbstract, author, webUrl;
+    String imageUrl, title, articleAbstract, author, webUrl, news_desk;
 
-    public ArticleObject(String imageUrl, String title, String articleAbstract, String author, String webUrl){
+    public ArticleObject(String imageUrl, String title, String articleAbstract, String author, String webUrl, String news_desk){
         this.imageUrl = imageUrl;
         this.title = title;
         this.articleAbstract = articleAbstract;
         this.author = author;
         this.webUrl = webUrl;
+        this.news_desk = news_desk;
     }
 
     public String getImageUrl() {
@@ -49,5 +50,13 @@ public class ArticleObject {
 
     public void setWebUrl(String webUrl) {
         this.webUrl = webUrl;
+    }
+
+    public String getNews_desk() {
+        return news_desk;
+    }
+
+    public void setNews_desk(String news_desk) {
+        this.news_desk = news_desk;
     }
 }

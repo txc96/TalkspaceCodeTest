@@ -41,6 +41,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
         holder.title.setText(articleObjects.get(position).getTitle());
         holder.articleAbstract.setText(articleObjects.get(position).getArticleAbstract());
         holder.author.setText(articleObjects.get(position).getAuthor());
+        holder.tags.setText(articleObjects.get(position).getNews_desk());
         holder.article.setOnClickListener(v -> callback.onArticleClicked(articleObjects.get(holder.getAdapterPosition()).getWebUrl()));
         holder.article.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -63,7 +64,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
         private ConstraintLayout article;
         private ImageView image;
-        private TextView title, articleAbstract, author;
+        private TextView title, articleAbstract, author, tags;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -72,6 +73,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
             title = itemView.findViewById(R.id.article_title);
             articleAbstract = itemView.findViewById(R.id.article_abstract);
             author = itemView.findViewById(R.id.article_author);
+            tags = itemView.findViewById(R.id.article_tags);
         }
     }
 

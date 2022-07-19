@@ -12,5 +12,6 @@ TODO:
 - viewBinding for MVVM
 - Save articleObject functionality
   - Swipe view?
+  - Parceable we save locally, add to list/filter out existing one
   - If time... ignore list?
 - Write up README/Documentation

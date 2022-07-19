@@ -22,6 +22,7 @@ public class SpinnerAdapter extends ArrayAdapter<Filter> {
     private Callback callback;
     private List<Filter> filters;
     private SpinnerAdapter spinnerAdapter;
+    private boolean boolFromView = false;
 
     public SpinnerAdapter(@NonNull Context context, Callback callback, int resource, @NonNull List<Filter> objects) {
         super(context, resource, objects);
@@ -58,12 +59,25 @@ public class SpinnerAdapter extends ArrayAdapter<Filter> {
         }
 
         viewHolder.title.setText(filters.get(position).getTitle());
+        boolFromView = true;
         viewHolder.checkbox.setChecked(filters.get(position).isSelected());
+        boolFromView = false;
+
+        if(position == 0){
+            viewHolder.checkbox.setVisibility(View.INVISIBLE);
+        }
+
+        viewHolder.checkbox.setTag(position);
+
         viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                filters.get(position).setSelected(b);
-                callback.onCheckboxChanged();
+                int position = (int) compoundButton.getTag();
+
+                if(!boolFromView){
+                    filters.get(position).setSelected(b);
+                    callback.onCheckboxChanged();
+                }
             }
         });
 

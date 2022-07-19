@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ import com.txc.healthand.networking.ArticlesService;
 import com.txc.healthand.networking.models.Article;
 import com.txc.healthand.networking.models.NYTimesResponse;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     private ArticlesAdapter articlesAdapter;
     private ArrayList<Filter> filterOptions;
     private ArticlesService mService;
+    private int articlePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,34 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
         filterSpinner.setAdapter(spinnerAdapter);
 
         mService = ArticlesService.getInstance();
+
+        Button previousButton = findViewById(R.id.previous_button);
+        Button nextButton = findViewById(R.id.next_button);
+
+        previousButton.setOnClickListener(v -> {
+            if(articlePage > 0){
+                articlePage--;
+                if(nextButton.getVisibility() == View.GONE)
+                    nextButton.setVisibility(View.VISIBLE);
+            }
+
+            if(articlePage == 0){
+                previousButton.setVisibility(View.GONE);
+            }
+            getArticles();
+        });
+
+        nextButton.setOnClickListener(v -> {
+            if(articlePage < 100){
+                articlePage++;
+                if(previousButton.getVisibility() == View.GONE)
+                    previousButton.setVisibility(View.VISIBLE);
+            }
+            else{
+                nextButton.setVisibility(View.GONE);
+            }
+            getArticles();
+        });
 
         getArticles();
     }
@@ -84,15 +116,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
      * Adapter Method
      * */
     private void renderArticles(ArrayList<ArticleObject> articleObjects){
-        if(articlesAdapter == null){
-            articlesAdapter = new ArticlesAdapter(MainActivity.this, articleObjects, MainActivity.this);
-            articlesList.setAdapter(articlesAdapter);
-            articlesList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        }
-        else{
-            //TODO come back and optimize this
-            articlesAdapter.notifyDataSetChanged();
-        }
+        articlesList.swapAdapter(new ArticlesAdapter(MainActivity.this, articleObjects, MainActivity.this), true);
+        articlesList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
     }
 
     /**
@@ -102,13 +127,13 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     private void getArticles(){
         String filters = "news_desk:(";
         for(Filter f : filterOptions){
-            if(f.isSelected()){
+            if(f.isSelected() && !f.getTitle().equals("Filters")){
                 filters = filters + addQuotesToFilter(f.getTitle()) + " ";
             }
         }
         filters = filters + ")";
 
-        mService.getArticlesApiService().getArticles(filters, BuildConfig.API_KEY).enqueue(new Callback<NYTimesResponse>() {
+        mService.getArticlesApiService().getArticles(articlePage, filters, BuildConfig.API_KEY).enqueue(new Callback<NYTimesResponse>() {
             @Override
             public void onResponse(Call<NYTimesResponse> call, Response<NYTimesResponse> response) {
                 if(response.isSuccessful()){
@@ -122,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
                                     articles.get(i).getHeadline().getMain(),
                                     articles.get(i).getSnippet(),
                                     getAuthorName(articles.get(i)),
-                                    articles.get(i).getWeb_url()
+                                    articles.get(i).getWeb_url(),
+                                    articles.get(i).getNews_desk()
                             );
                             articleObjects.add(articleObject);
                         }
@@ -157,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     }
 
     private String getArticleImage(Article article){
-        if(article.getMultimedia() != null){
+        if(article.getMultimedia() != null && article.getMultimedia().size() > 0){
             return "https://www.nytimes.com/" + article.getMultimedia().get(0).getUrl();
         }
         else{
@@ -168,12 +194,14 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
     //get the 3 separate name strings and combine them into one
     private String getAuthorName(Article article){
         String author = "";
-        String middleName = article.getByline().getPerson().get(0).getMiddlename();
-        author = author + article.getByline().getPerson().get(0).getFirstname() + " ";
-        if(middleName != null && !middleName.equals("null") && !middleName.isEmpty()){
-            author = author + middleName + " ";
+        if(article.getByline().getPerson() != null && article.getByline().getPerson().size() > 0){
+            String middleName = article.getByline().getPerson().get(0).getMiddlename();
+            author = author + article.getByline().getPerson().get(0).getFirstname() + " ";
+            if(middleName != null && !middleName.equals("null") && !middleName.isEmpty()){
+                author = author + middleName + " ";
+            }
+            author = author + article.getByline().getPerson().get(0).getLastname();
         }
-        author = author + article.getByline().getPerson().get(0).getLastname();
         return author;
     }
 }
