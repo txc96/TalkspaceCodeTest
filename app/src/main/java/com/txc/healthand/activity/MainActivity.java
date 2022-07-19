@@ -1,5 +1,6 @@
 package com.txc.healthand.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
 
     private RecyclerView articlesList;
     private ArrayList<Filter> filterOptions;
+    ArrayList<ArticleObject> articleObjects;
     private ArticlesService mService;
     private int articlePage;
     private boolean lightMode;
@@ -111,6 +114,13 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
 
         //get articles at the start
         getArticles();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean landscape = (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
+        renderArticles(landscape);
     }
 
     /**
@@ -186,11 +196,13 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
      * Adapter Method
      * */
     //Send articles to the adapter
-    private void renderArticles(ArrayList<ArticleObject> articleObjects){
+    private void renderArticles(boolean landscape){
         //Using swap adapter instead of notifyDataSet... methods due to amount of changing data
         //and inefficiency of notifyDataSetChanged compared to having garbage collector
         //clean up old adapter
-        articlesList.swapAdapter(new ArticlesAdapter(MainActivity.this, articleObjects, MainActivity.this), true);
+        articlesList.swapAdapter(new ArticlesAdapter(
+                    MainActivity.this, articleObjects, MainActivity.this, landscape),
+true);
     }
 
     /**
@@ -237,7 +249,12 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
             public void onResponse(Call<NYTimesResponse> call, Response<NYTimesResponse> response) {
                 if(response.isSuccessful()){
                     List<com.txc.healthand.networking.models.Article> articles = response.body().getDocs().getArticles();
-                    ArrayList<ArticleObject> articleObjects = new ArrayList<>();
+                    if(articleObjects == null){
+                        articleObjects = new ArrayList<>();
+                    }
+                    else{
+                        articleObjects.clear();
+                    }
                     //Only check for and show local articles on page 1 (0)
                     //Not practical for production usage but easy to show saved articles first
                     if(articlePage < 1){
@@ -287,7 +304,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerAdapter.Ca
                     }
                     //Only call adapter if we have articles to show
                     if(articleObjects.size() > 0){
-                        renderArticles(articleObjects);
+                        boolean landscape = (MainActivity.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+                        renderArticles(landscape);
                     }
                     else{
                         handleToast(MainActivity.this, "No articles");

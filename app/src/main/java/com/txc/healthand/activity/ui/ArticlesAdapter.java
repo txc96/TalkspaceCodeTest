@@ -22,16 +22,25 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     private final Context context;
     private final Callback callback;
     private final ArrayList<ArticleObject> articleObjects;
-    public ArticlesAdapter(Context context, ArrayList<ArticleObject> articleObjects, Callback callback){
+    private boolean landscape;
+
+    public ArticlesAdapter(Context context, ArrayList<ArticleObject> articleObjects, Callback callback, boolean landscape){
         this.context = context;
         this.articleObjects = articleObjects;
         this.callback = callback;
+        this.landscape = landscape;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ConstraintLayout cl = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.article_item, parent, false);
+        ConstraintLayout cl;
+        if(landscape){
+            cl = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.article_item_landscape, parent, false);
+        }
+        else{
+            cl = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.article_item_portrait, parent, false);
+        }
         return new ArticlesAdapter.ViewHolder(cl);
     }
 
